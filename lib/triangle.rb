@@ -1,33 +1,44 @@
-require "pry"
-class Triangle	
-  # write code here	  # write code here
+require 'pry'
 
-  def initialize (a, b, c)
-    @a = a
-    @b = b
-    @c = c
+class Triangle
+  # write code here	
+  attr_reader :side_1, :side_2, :side_3
+
+  def initialize(side_1, side_2, side_3)
+    @side_1 = side_1
+    @side_2 = side_2
+    @side_3 = side_3
   end
 
   def kind
-    if @a<=0 || @b<=0 || @c<=0 || @a+@b <= @c || @b+@c <= @a || @a+@c <= @b
-      begin
-        raise TriangleError
-      # rescue TriangleError => error
-      #     puts error.message
-      end
-    elsif @a == @b && @b == @c
-      return :equilateral
-    elsif @a == @b || @b ==@c || @a == @c
-      return :isosceles
+    if has_triangle_inequality || any_side_less_than_zero
+      raise TriangleError.new("This is not a valid triangle")
+    elsif side_1 == side_2 && side_2 == side_3
+      :equilateral
+    elsif side_1 == side_2 || side_1 == side_3 || side_2 == side_3
+      :isosceles
     else
-      return :scalene
+      :scalene
     end
   end
-end	end
 
-class TriangleError < StandardError
-   def message
-     "Not a valid triangle!"
-   end
- end
- 
+  class TriangleError < StandardError
+    def message
+      "the given sides do not form a triangle"
+    end
+  end
+
+  def any_side_less_than_zero
+    side_1 <= 0 ||
+    side_2 <= 0 ||
+    side_3 <= 0
+  end
+
+  def has_triangle_inequality
+    side_1 + side_2 <= side_3 ||
+    side_3 + side_2 <= side_1 ||
+    side_1 + side_3 <= side_2
+  end
+
+
+end	
